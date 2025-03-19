@@ -1,3 +1,4 @@
+# for us east 1 and anthropic.claude-v2 model used
 # import boto3
 # import json
 
@@ -30,6 +31,11 @@
 
 #     result = json.loads(response["body"].read())
 #     return result.get("completion", "Error: No response from model.")
+
+
+
+# for ap-south-1 region and amazon.titan-text-express used 
+
 
 import boto3
 import json
@@ -71,5 +77,4 @@ Now, answer this question:
 # Example test call
 response = query_bedrock("This is a test document.", "What is this document about?")
 print(response)
-
 
