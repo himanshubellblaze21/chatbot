@@ -1,3 +1,4 @@
+#updated code 
 # import streamlit as st
 # import boto3
 # import os
@@ -51,7 +52,7 @@
 #                 margin: 0 10px;
 #             }
 #         }
-#         div.stButton > button, div.stForm button {
+#         div.stButton > button{
 #             background-color: #9833C3 !important; /* Purple Background */
 #             color: white !important;  /* White text */
 #             border-radius: 10px !important; /* Rounded Corners */
@@ -61,8 +62,36 @@
 #             margin-top: 27px;
 #         }
 
-#         div.stButton > button:hover, div.stForm button:hover {
+#         div.stButton > button:hover{
 #             background-color: #6C238E !important; /* Darker Purple on Hover */
+#         }
+#         div.stForm button {
+#             background-color: #9833C3 !important; /* Purple Background */
+#             color: white !important;  /* White text */
+#             border-radius: 10px !important; /* Rounded Corners */
+#             padding: 30px 25px !important; /* Slightly bigger padding for better clickability */
+#             font-size: 16px !important; /* Adjust font size */
+#             border: none !important; /* Remove border */
+#             position: fixed !important; /* Fixed position */
+#             bottom: 15px; /* Align with the input field */
+#             justify-content: center;
+#             z-index: 1000; /* Ensures it stays above other elements */
+#             cursor: pointer; /* Add cursor pointer for better UX */
+#         }
+#         div.stForm button:hover {
+#             background-color: #6C238E !important; /* Darker Purple on Hover */
+#         }
+#         .stTextInput {
+#             padding: 10px 20px !important; /* Adjust padding for better input visibility */
+#             width: 500px !important; /* Increased width for better text input */
+#             position: fixed !important; /* Fixed position */
+#             bottom: 15px; /* Align with the button */
+#             justify-content: center /* Adjust to align properly with the button */
+#             z-index: 1000; /* Ensure it's above other elements */
+#             border-radius: 8px !important; /* Rounded corners */
+#             border: 1px solid #ccc !important; /* Subtle border */
+#             font-size: 16px !important; /* Improve readability */
+#             background-color:#9833C3 ;
 #         }
 #         </style>
 #         """,
@@ -88,7 +117,7 @@
 #         st.session_state.upload_message_shown = False
 #         st.rerun()
 
-# st.markdown("<h1 style='text-align: center;'>💬 Document Chatbot</h1>", unsafe_allow_html=True)
+# st.markdown("<h1 style='text-align: center; position:sticky;'>💬 Document Chatbot</h1>", unsafe_allow_html=True)
 # st.write("")
 # st.write("")
 # st.write("")
@@ -155,34 +184,54 @@
 # with st.form(key=f"chat_form_{st.session_state.chat_count}"):  # Unique form key
 #     col1, col2 = st.columns([6, 2], gap="medium")
 #     with col1:
-#         user_query = st.text_input(
-#             "Type your question here:", 
-#             key=f"user_query_input_{st.session_state.chat_count}",  # Unique key per session
-#             placeholder="Ask something..."
-#         )  
+#         text_input = st.text_input(
+#             "Type your question here:", key=f"text_input{st.session_state.chat_count}", placeholder="Ask something...")  
 #     with col2:
-#         send_button = st.form_submit_button("💬 Send")  # Submit button inside form
+#         send_button = st.form_submit_button("SEND")  # Submit button inside form
 
 # # Handle Chat Submission
-# if send_button:
+# if send_button and text_input.strip():  # Ensure input is not empty
 #     if not st.session_state.file_uploaded or not st.session_state.document_text.strip():
-#         st.session_state.chat_history.append(("AI", "Hello, please let's stick to documents query only."))
+#         st.session_state.chat_history.append(("AI", "Hello, please upload a document before asking questions."))
 #         st.rerun()
-#     elif user_query:
+#     else:
 #         with st.spinner("Generating answer..."):
-#             answer = query_bedrock(st.session_state.document_text, user_query)
+#             answer = query_bedrock(st.session_state.document_text, text_input)
 
-#         st.session_state.chat_history.append(("You", user_query))
+#         st.session_state.chat_history.append(("You", text_input))
 #         st.session_state.chat_history.append(("AI", answer))
 
 #         # **Clear input field using session state**
 #         st.session_state["chat_count"] += 1  # Increment chat count for unique keys
 
 #         st.rerun()
-#     else:
-#         st.warning("⚠️ Please enter a question.")
+#     # else:
+#     #     st.warning("⚠️ Please enter a question.")
 
-#updated code 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import streamlit as st
 import boto3
 import os
@@ -357,51 +406,52 @@ if uploaded_file:
                 st.session_state.upload_message_shown = True
             st.rerun()
 
-
-
 # Ensure session state variables exist
 if "chat_count" not in st.session_state:
     st.session_state["chat_count"] = 0
 if "user_query_input" not in st.session_state:
     st.session_state["user_query_input"] = ""
 
+# If the user submits a query before uploading a file, reset the input field before rendering
+if "reset_input" in st.session_state and st.session_state.reset_input:
+    st.session_state.user_query_input = ""
+    st.session_state.reset_input = False  # Reset the flag
+
 with st.form(key=f"chat_form_{st.session_state.chat_count}"):  # Unique form key
     col1, col2 = st.columns([6, 2], gap="medium")
+    
     with col1:
         text_input = st.text_input(
-            "Type your question here:", key=f"text_input{st.session_state.chat_count}", placeholder="Ask something...")  
+            "Type your question here:",
+            key="user_query_input",  # Use session state key
+            value=st.session_state.user_query_input,  # Ensure it resets properly
+            placeholder="Ask something..."
+        )
+
     with col2:
         send_button = st.form_submit_button("SEND")  # Submit button inside form
 
 # Handle Chat Submission
-if send_button:
+if send_button and text_input.strip():  # Ensure input is not empty
     if not st.session_state.file_uploaded or not st.session_state.document_text.strip():
-        st.session_state.chat_history.append(("AI", "Hello, please let's stick to documents query only."))
-        st.rerun()
-    elif text_input:
+        # ✅ Append the user's question before responding
+        st.session_state.chat_history.append(("You", text_input))
+        st.session_state.chat_history.append(("AI", "Hello, please upload a document before asking questions."))
+
+        # ✅ Set a flag to reset the input field before next render
+        st.session_state.reset_input = True
+        
+        st.rerun()  # Force Streamlit to refresh the UI
+    else:
         with st.spinner("Generating answer..."):
             answer = query_bedrock(st.session_state.document_text, text_input)
 
+        # ✅ Append user's query first
         st.session_state.chat_history.append(("You", text_input))
         st.session_state.chat_history.append(("AI", answer))
 
-        # **Clear input field using session state**
-        st.session_state["chat_count"] += 1  # Increment chat count for unique keys
+        # ✅ Set a flag to reset the input field before next render
+        st.session_state.reset_input = True
 
+        st.session_state["chat_count"] += 1  # Increment chat count for unique form key
         st.rerun()
-    else:
-        st.warning("⚠️ Please enter a question.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
