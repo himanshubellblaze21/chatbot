@@ -5,7 +5,7 @@ from extract_text import extract_text
 from bedrockapi import query_bedrock
 
 # AWS S3 Configuration
-S3_BUCKET = "chatbotbucket-123456"
+S3_BUCKET = "chatbotbucket-12345"
 s3_client = boto3.client("s3")
 
 os.environ["STREAMLIT_WATCH_FILE"] = "false"
@@ -181,3 +181,17 @@ if send_button:
         st.rerun()
     else:
         st.warning("⚠️ Please enter a question.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
