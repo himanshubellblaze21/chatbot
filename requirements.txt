@@ -1,0 +1,9 @@
+boto3
+streamlit
+fitz
+pytesseract
+python-docx
+frontend
+tools
+PyMuPDF
+pdf2image
