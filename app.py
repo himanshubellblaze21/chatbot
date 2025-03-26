@@ -242,7 +242,7 @@ s3_client = boto3.client("s3")
 
 os.environ["STREAMLIT_WATCH_FILE"] = "false"
 
-st.set_page_config(page_title="Multi-Document Chatbot")
+st.set_page_config(page_title="Document Chatbot")
 
 # Custom CSS for chat styling
 st.markdown(
@@ -260,18 +260,32 @@ st.markdown(
             font-size: 16px !important; border: none !important; margin-top: 27px;
         }
         div.stButton > button:hover { background-color: #6C238E !important; }
+        # div.stForm button {
+        #     background-color: #9833C3 !important; color: white !important;
+        #     border-radius: 10px !important; padding: 31.5px 25px !important;
+        #     font-size: 16px !important; border: none !important; position: fixed !important;
+        #     bottom: 15px; justify-content:center ; z-index: 1000; cursor: pointer;
+        # }
         div.stForm button {
-            background-color: #9833C3 !important; color: white !important;
-            border-radius: 10px !important; padding: 32px 25px !important;
-            font-size: 16px !important; border: none !important; position: fixed !important;
-            bottom: 15px; justify-content: center; z-index: 1000; cursor: pointer;
+            background-color: #9833C3 !important;
+            color: white !important;
+            border-radius: 10px !important;
+            padding: 31.5px 25px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            font-style: italic !important;
+            border: none !important;
+            position: fixed !important;
+            bottom: 15px;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
         }
         div.stForm button:hover { background-color: #6C238E !important; }
         .stTextInput {
             padding: 10px 20px !important; width: 500px !important;
             position: fixed !important; bottom: 15px; border-radius: 8px !important;
-            border: 1px solid #ccc !important; font-size: 16px !important;
-            background-color: #9833C3; z-index: 1000;
+            font-size: 16px !important;background-color: #9833C3; z-index: 1000;
         }
         div.stForm {
             border: none;
@@ -299,7 +313,10 @@ with st.sidebar:
         st.session_state.upload_message_shown = False
         st.rerun()
 
-st.markdown("<h1>💬 Document Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;font-size:50px;'>🤖 Document Chatbot</h1>", unsafe_allow_html=True)
+st.write("")
+st.write("")
+st.write("")
 st.write("")
 
 # Initialize session state
@@ -360,7 +377,7 @@ if "reset_input" in st.session_state and st.session_state.reset_input:
 
 # Chat Input Form
 with st.form(key=f"chat_form_{st.session_state.chat_count}"):
-    col1, col2 = st.columns([5.2, 2], gap="medium")
+    col1, col2 = st.columns([4, 2], gap="medium")
     with col1:
         text_input = st.text_input(
             "Type your question here:",
