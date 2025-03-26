@@ -262,7 +262,7 @@ st.markdown(
         div.stButton > button:hover { background-color: #6C238E !important; }
         div.stForm button {
             background-color: #9833C3 !important; color: white !important;
-            border-radius: 10px !important; padding: 30px 25px !important;
+            border-radius: 10px !important; padding: 32px 25px !important;
             font-size: 16px !important; border: none !important; position: fixed !important;
             bottom: 15px; justify-content: center; z-index: 1000; cursor: pointer;
         }
@@ -272,6 +272,11 @@ st.markdown(
             position: fixed !important; bottom: 15px; border-radius: 8px !important;
             border: 1px solid #ccc !important; font-size: 16px !important;
             background-color: #9833C3; z-index: 1000;
+        }
+        div.stForm {
+            border: none;
+            box-shadow: none;
+            padding: 0;
         }
     </style>
     """,
@@ -294,7 +299,7 @@ with st.sidebar:
         st.session_state.upload_message_shown = False
         st.rerun()
 
-st.markdown("<h1>💬 Multi-Document Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<h1>💬 Document Chatbot</h1>", unsafe_allow_html=True)
 st.write("")
 
 # Initialize session state
@@ -315,6 +320,8 @@ if st.session_state.chat_history:
         alignment = "user" if speaker == "You" else "ai"
         icon = "🧑‍💻" if speaker == "You" else "🤖 AI:"
         st.markdown(f"<div class='chat-bubble {alignment}'><strong>{icon}</strong> {text}</div>", unsafe_allow_html=True)
+else:
+    st.write("")
 
 # Process multiple file uploads
 if uploaded_files:
@@ -353,7 +360,7 @@ if "reset_input" in st.session_state and st.session_state.reset_input:
 
 # Chat Input Form
 with st.form(key=f"chat_form_{st.session_state.chat_count}"):
-    col1, col2 = st.columns([6, 2], gap="medium")
+    col1, col2 = st.columns([5.2, 2], gap="medium")
     with col1:
         text_input = st.text_input(
             "Type your question here:",
@@ -363,6 +370,7 @@ with st.form(key=f"chat_form_{st.session_state.chat_count}"):
         )
     with col2:
         send_button = st.form_submit_button("SEND")
+
 
 # Auto-submit if Enter is pressed
 if st.session_state.get("enter_pressed", False):
