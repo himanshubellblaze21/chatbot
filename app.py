@@ -248,7 +248,7 @@ st.set_page_config(page_title="Document Chatbot")
 st.markdown(
     """
     <style>
-        body { background-color: #9833C3; color: white; }
+        body { background-color: #9833C3; color: white; background-size: cover;}
         .chat-container { max-width: 600px; margin: auto; }
         .chat-bubble { padding: 10px; border-radius: 10px; margin-bottom: 10px; display: inline-block; max-width: 70%; color: white; }
         .user { background-color: #9833C3; text-align: right; float: right; clear: both; margin-right: 10px; }
@@ -270,7 +270,7 @@ st.markdown(
             background-color: #9833C3 !important;
             color: white !important;
             border-radius: 10px !important;
-            padding: 31.5px 25px !important;
+            padding: 31px 25px !important;
             font-size: 16px !important;
             font-weight: bold !important;
             font-style: italic !important;
@@ -291,6 +291,10 @@ st.markdown(
             border: none;
             box-shadow: none;
             padding: 0;
+        }
+        .stApp {
+            background: url('https://assets.aboutamazon.com/dims4/default/e73bc85/2147483647/strip/true/crop/4093x2304+7+0/resize/1240x698!/quality/90/?url=https%3A%2F%2Famazon-blogs-brightspot.s3.amazonaws.com%2F36%2F59%2Feba4adcc4f88a972b5639ed1dde0%2Fadobestock-712831308.jpeg') no-repeat center center fixed;
+            background-size: cover;
         }
     </style>
     """,
@@ -377,7 +381,7 @@ if "reset_input" in st.session_state and st.session_state.reset_input:
 
 # Chat Input Form
 with st.form(key=f"chat_form_{st.session_state.chat_count}"):
-    col1, col2 = st.columns([4, 2], gap="medium")
+    col1, col2 = st.columns([5, 2], gap="medium")
     with col1:
         text_input = st.text_input(
             "Type your question here:",
