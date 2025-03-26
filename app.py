@@ -235,6 +235,7 @@ import os
 import random
 from extract_text import extract_text
 from bedrockapi import query_bedrock
+import base64
 
 # AWS S3 Configuration
 S3_BUCKET = "chatbotbucket-12345"
@@ -244,30 +245,87 @@ os.environ["STREAMLIT_WATCH_FILE"] = "false"
 
 st.set_page_config(page_title="Document Chatbot")
 
+
+# Function to encode an image to base64
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+image_path = "static/bellblaze.png"  # Ensure this file exists
+if os.path.exists(image_path):
+    base64_image = get_base64_image(image_path)
+
+    # Inject Background Image using Base64
+    st.markdown(
+        f"""
+        <style>
+            .stApp {{
+                background-image: url("data:image/png;base64,{base64_image}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    st.error(f"Background image '{image_path}' not found. Please check the path.")
+
+
 # Custom CSS for chat styling
 st.markdown(
     """
     <style>
-        body { background-color: #9833C3; color: white; background-size: cover;}
-        .chat-container { max-width: 600px; margin: auto; }
-        .chat-bubble { padding: 10px; border-radius: 10px; margin-bottom: 10px; display: inline-block; max-width: 70%; color: white; }
-        .user { background-color: #9833C3; text-align: right; float: right; clear: both; margin-right: 10px; }
-        .ai { background-color: #7633A3; text-align: left; float: left; clear: both; margin-left: 10px; }
-        @media (max-width: 900px) { .chat-container { margin: 0 10px; } }
-        div.stButton > button {
-            background-color: #9833C3 !important; color: white !important;
-            border-radius: 10px !important; padding: 7px 20px !important;
-            font-size: 16px !important; border: none !important; margin-top: 27px;
+        body { 
+            background-color: #337EFF;
+            color: white; 
+            background-size: cover;
         }
-        div.stButton > button:hover { background-color: #6C238E !important; }
-        # div.stForm button {
-        #     background-color: #9833C3 !important; color: white !important;
-        #     border-radius: 10px !important; padding: 31.5px 25px !important;
-        #     font-size: 16px !important; border: none !important; position: fixed !important;
-        #     bottom: 15px; justify-content:center ; z-index: 1000; cursor: pointer;
-        # }
+        .chat-container { 
+            max-width: 600px;
+            margin: auto; 
+        }
+        .chat-bubble { 
+            padding: 10px; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            display: inline-block; 
+            max-width: 70%; 
+            color: white; 
+        }
+        .user { 
+            background-color: #337EFF; 
+            text-align: right; 
+            float: right; 
+            clear: both; 
+            margin-right: 10px; 
+        }
+        .ai { 
+            background-color: #337EFF; 
+            text-align: left; 
+            float: left; 
+            clear: both; 
+            margin-left: 10px; 
+        }
+        @media (max-width: 900px) { 
+            .chat-container { margin: 0 10px; } 
+        }
+        div.stButton > button {
+            background-color: #337EFF !important; 
+            color: white !important;
+            border-radius: 10px !important; 
+            padding: 7px 20px !important;
+            font-size: 16px !important; 
+            border: none !important; 
+            margin-top: 27px;
+        }
+        div.stButton > button:hover { 
+            background-color: #004ED4 !important; 
+        }
         div.stForm button {
-            background-color: #9833C3 !important;
+            background-color: #337EFF !important;
             color: white !important;
             border-radius: 10px !important;
             padding: 31px 25px !important;
@@ -281,20 +339,23 @@ st.markdown(
             z-index: 1000;
             cursor: pointer;
         }
-        div.stForm button:hover { background-color: #6C238E !important; }
+        div.stForm button:hover { 
+            background-color: #004ED4 !important; 
+        }
         .stTextInput {
-            padding: 10px 20px !important; width: 500px !important;
-            position: fixed !important; bottom: 15px; border-radius: 8px !important;
-            font-size: 16px !important;background-color: #9833C3; z-index: 1000;
+            padding: 10px 20px !important; 
+            width: 500px !important;
+            position: fixed !important; 
+            bottom: 15px; 
+            border-radius: 8px !important;
+            font-size: 16px !important;
+            background-color: #337EFF; 
+            z-index: 1000;
         }
         div.stForm {
             border: none;
             box-shadow: none;
             padding: 0;
-        }
-        .stApp {
-            background: url('https://assets.aboutamazon.com/dims4/default/e73bc85/2147483647/strip/true/crop/4093x2304+7+0/resize/1240x698!/quality/90/?url=https%3A%2F%2Famazon-blogs-brightspot.s3.amazonaws.com%2F36%2F59%2Feba4adcc4f88a972b5639ed1dde0%2Fadobestock-712831308.jpeg') no-repeat center center fixed;
-            background-size: cover;
         }
     </style>
     """,
