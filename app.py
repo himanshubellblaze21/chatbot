@@ -245,33 +245,35 @@ os.environ["STREAMLIT_WATCH_FILE"] = "false"
 
 st.set_page_config(page_title="Document Chatbot")
 
+logo_path = "static/Bellblaze-Logo-01.png"
 
-# Function to encode an image to base64
-def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+# Convert image to Base64
+with open(logo_path, "rb") as image_file:
+    encoded_logo = base64.b64encode(image_file.read()).decode()
 
-image_path = "static/bellblaze.png"  # Ensure this file exists
-if os.path.exists(image_path):
-    base64_image = get_base64_image(image_path)
-
-    # Inject Background Image using Base64
-    st.markdown(
-        f"""
-        <style>
-            .stApp {{
-                background-image: url("data:image/png;base64,{base64_image}");
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-else:
-    st.error(f"Background image '{image_path}' not found. Please check the path.")
+# Inject CSS to fix the logo in the top-right corner
+st.markdown(
+    f"""
+    <style>
+        .logo-container {{
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.8); /* Optional: white background with transparency */
+            padding: 5px;
+            border-radius: 10px;
+        }}
+        .logo-container img {{
+            width:200px; /* Adjust size as needed */
+        }}
+    </style>
+    <div class="logo-container">
+        <img src="data:image/jpg;base64,{encoded_logo}">
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # Custom CSS for chat styling
