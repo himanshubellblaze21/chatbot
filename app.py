@@ -15,7 +15,7 @@ os.environ["STREAMLIT_WATCH_FILE"] = "false"
 
 st.set_page_config(page_title="Document Chatbot")
 
-logo_path = "static/Bellblaze-Logo-01.jpg"
+logo_path = "static/watermark.png"
 
 # Convert image to Base64
 with open(logo_path, "rb") as image_file:
@@ -30,7 +30,7 @@ st.markdown(
             background-size: cover;
             opacity: 1; /* Adjust transparency here, closer to 1 is more opaque */
         }}
-        .header {{
+        .p {{
             position: absolute;
             top: 60;
             left: 0;
@@ -38,11 +38,11 @@ st.markdown(
             background-color: rgba(255, 255, 255, 0.8); /* Optional background for readability */
             text-align: center;
             padding: 10px 0;
-            z-index: 1;
+            z-index: 1000;
         }}
     </style>
     <div class="header">
-        <h1 style='font-size:50px;color:#000000'>🤖 Document Chatbot</h1>
+        <p style='font-size:50px;color:#000000;margin:0;'>🤖-What can I help you with?</p>
     </div>
     ''',
     unsafe_allow_html=True,
@@ -154,6 +154,7 @@ with st.sidebar:
         st.rerun()
 
 # st.markdown("<h1 style='text-align:center;font-size:50px;color:#337EFF'>🤖 Document Chatbot</h1>", unsafe_allow_html=True)
+st.write("")
 st.write("")
 st.write("")
 st.write("")
