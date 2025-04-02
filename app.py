@@ -101,8 +101,8 @@ st.markdown(
         div.stForm button {
             background-color: #337EFF !important;
             color: white !important;
-            border-radius: 15px !important;
-            padding: 31px 25px !important;
+            border-radius: 70px !important;
+            padding: 17px 25px !important;
             font-size: 16px !important;
             font-weight: bold !important;
             font-style: italic !important;
@@ -117,11 +117,12 @@ st.markdown(
             background-color: #004ED4 !important; 
         }
         .stTextInput {
+            height:px;
             padding: 10px 20px !important; 
-            width: 500px !important;
+            width: 550px !important;
             position: fixed !important; 
             bottom: 15px; 
-            border-radius: 15px !important;
+            border-radius: 50px !important;
             font-size: 16px !important;
             background-color: #337EFF; 
             z-index: 1000;
@@ -131,7 +132,6 @@ st.markdown(
             box-shadow: none;
             padding: 0;
         }
-
     </style>
     """,
     unsafe_allow_html=True,
@@ -153,7 +153,6 @@ with st.sidebar:
         st.session_state.upload_message_shown = False
         st.rerun()
 
-# st.markdown("<h1 style='text-align:center;font-size:50px;color:#337EFF'>🤖 Document Chatbot</h1>", unsafe_allow_html=True)
 st.write("")
 st.write("")
 st.write("")
@@ -181,9 +180,6 @@ if st.session_state.chat_history:
 else:
     st.write("")
 
-
-
-    
 # Process multiple file uploads
 if uploaded_files:
     for uploaded_file in uploaded_files:
@@ -223,17 +219,17 @@ if "reset_input" in st.session_state and st.session_state.reset_input:
 
 # Chat Input Form
 with st.form(key=f"chat_form_{st.session_state.chat_count}"):
-    col1, col2 = st.columns([5, 2], gap="medium")
+    col1, col2 = st.columns([8, 2], gap="medium")
     with col1:
         text_input = st.text_input(
-            "Type your question here:",
+            "",  # Empty label
             key="user_query_input",
             value=st.session_state.user_query_input,
-            placeholder="Ask something about the uploaded documents..."
+            placeholder="Ask something about the uploaded documents...",
+            label_visibility="collapsed"  # Hides the label
         )
     with col2:
         send_button = st.form_submit_button("SEND")
-
 
 # Auto-submit if Enter is pressed
 if st.session_state.get("enter_pressed", False):
@@ -259,8 +255,8 @@ if send_button and text_input.strip():
         st.markdown(f"<div class='chat-bubble user'><strong>🧑‍💻 You:</strong> {text_input}</div>", unsafe_allow_html=True)
 
         # AI response for missing documents
-        st.session_state.chat_history.append(("AI", "Please upload one or more documents to start querying."))
-        display_animated_text("Please upload one or more documents to start querying.", role="AI")
+        st.session_state.chat_history.append(("AI", "Hey,Please upload one or more documents to start querying."))
+        display_animated_text("Hey,Please upload one or more documents to start querying.", role="AI")
 
         st.session_state.reset_input = True
         st.rerun()
@@ -294,4 +290,4 @@ if send_button and text_input.strip():
 
         st.session_state.reset_input = True
         st.session_state["chat_count"] += 1
-        st.rerun()
+        st.rerun()  
