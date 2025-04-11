@@ -155,7 +155,7 @@ with st.sidebar:
         
      # Premium Purchase Button
     st.markdown("---")
-    if st.button("💳 Purchase Premium"):
+    if st.button("💳 Subscribe"):
         st.info("🚧 Premium purchase flow coming soon! (Integration with Stripe or other payment gateway)")
     st.markdown("### 🔓 Unlock Unlimited Questions")
 
