@@ -71,7 +71,7 @@ st.markdown(
         }
         .user { 
             background-color: #337EFF; 
-            text-align: right; 
+            text-align: left; 
             float: right; 
             clear: both; 
             margin-right: 10px; 
@@ -152,6 +152,12 @@ with st.sidebar:
         st.session_state.documents = []
         st.session_state.upload_message_shown = False
         st.rerun()
+        
+     # Premium Purchase Button
+    st.markdown("---")
+    if st.button("💳 Purchase Premium"):
+        st.info("🚧 Premium purchase flow coming soon! (Integration with Stripe or other payment gateway)")
+    st.markdown("### 🔓 Unlock Unlimited Questions")
 
 st.write("")
 st.write("")
@@ -247,47 +253,55 @@ def display_animated_text(text, role="AI"):
 
 MAX_TOKENS = 42000  # Bedrock input token limit
 
+# Limit to 10 free questions
+MAX_FREE_QUESTIONS = 6
+
 # Handle chat submission
 if send_button and text_input.strip():
-    if not st.session_state.file_uploaded or not st.session_state.documents:
+    if st.session_state["chat_count"] >= MAX_FREE_QUESTIONS:
+        # User hit limit — block interaction
+        premium_message = "🎉 You've used all free questions! To continue chatting, please upgrade to our Premium Membership."
+        st.session_state.chat_history.append(("AI", premium_message))
+        display_animated_text(premium_message, role="AI")
+        st.session_state.reset_input = True
+        st.rerun()
+    
+    elif not st.session_state.file_uploaded or not st.session_state.documents:
         # Show user's question immediately
         st.session_state.chat_history.append(("You", text_input))
         st.markdown(f"<div class='chat-bubble user'><strong>🧑‍💻 You:</strong> {text_input}</div>", unsafe_allow_html=True)
 
         # AI response for missing documents
-        st.session_state.chat_history.append(("AI", "Hey,Please upload one or more documents to start querying."))
-        display_animated_text("Hey,Please upload one or more documents to start querying.", role="AI")
+        st.session_state.chat_history.append(("AI", "Hey, please upload one or more documents to start querying."))
+        display_animated_text("Hey, please upload one or more documents to start querying.", role="AI")
 
         st.session_state.reset_input = True
         st.rerun()
+    
     else:
         # Select a random document
         selected_doc = random.choice(st.session_state.documents)
         document_text = selected_doc[1]
 
         if len(document_text) > MAX_TOKENS:
-            # Notify user if document is too large
             warning_message = f"⚠️ The document **{selected_doc[0]}** is too large to process (limit: {MAX_TOKENS} characters). Try a smaller document or summarizing it."
             st.session_state.chat_history.append(("AI", warning_message))
-            display_animated_text(warning_message, role="AI")
+            display_animated_text(warning_message, role="AI")  
         else:
-            
             try:
                 answer = query_bedrock(document_text, text_input)
-                # Show user's question
+
                 st.session_state.chat_history.append(("You", text_input))
                 st.markdown(f"<div class='chat-bubble user'><strong>🧑‍💻 You:</strong> {text_input}</div>", unsafe_allow_html=True)
 
-                # Animated AI response
                 st.session_state.chat_history.append(("AI", answer))
                 display_animated_text(answer, role="AI")
 
             except Exception as e:
-                # Handle API errors
                 error_message = f"❌ An error occurred: {str(e)}"
                 st.session_state.chat_history.append(("AI", error_message))
                 display_animated_text(error_message, role="AI")
 
         st.session_state.reset_input = True
         st.session_state["chat_count"] += 1
-        st.rerun()  
+        st.rerun()
