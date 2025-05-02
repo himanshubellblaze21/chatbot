@@ -1,5 +1,0 @@
-[server]
-baseUrlPath = "/document-chatbot"
-headless = true
-enableCORS = false
-enableXsrfProtection = false
